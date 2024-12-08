@@ -14,23 +14,6 @@ var knockback_indicators: Array[OmniLight3D] = []
 var collision_shapes: Array[CollisionShape3D] = []
 var active_collision_shape: CollisionShape3D = null
 
-# Function to apply damage
-func apply_damage(damage_amount: int):
-	health -= damage_amount
-	#print("Player took ", damage_amount, " damage! Current health: ", health)
-	
-	if health <= 0:
-		die()
-
-# Function to handle player death
-func die():
-	print("Player has died!")
-	#You can implement respawning or game over logic here.
-	get_node("../GameOver").game_over()
-	var enemies = get_tree().get_nodes_in_group("enemies")
-	for enemy in enemies:
-		enemy.visible = false
-
 func _ready():
 	print("Area3D is monitoring:", $"../Area3D".monitoring)
 	print("Collision shapes array: ", collision_shapes)
