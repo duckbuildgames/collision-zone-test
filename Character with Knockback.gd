@@ -75,12 +75,6 @@ func knockback():
 				direction = direction.normalized() # Get the direction vector
 				# Apply knockback force
 				enemy.apply_knockback(direction * knockback_power)
-	#if current_knockback_uses > 0:
-		## Perform knockback effect
-		#current_knockback_uses -= 1
-		#print("Knockback used. Remaining:", current_knockback_uses)
-	#else:
-		#print("No knockback uses left!")
 		
 
 func use_knockback():
