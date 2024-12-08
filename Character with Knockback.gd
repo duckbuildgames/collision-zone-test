@@ -149,7 +149,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 func deactivate_collision_shape(shape: CollisionShape3D):
 	if shape and not shape.disabled:
 		shape.set_deferred("disabled", true)
-		#shape.disabled = true
 		shape.visible = false
 		print("Deactivating shape:", shape.name, "Disabled state after call:", shape.disabled)
 		active_collision_shape = shape
