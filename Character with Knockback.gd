@@ -139,6 +139,6 @@ func reactivate_other_collision_shapes(excluded_shape: CollisionShape3D):
 	# Reactivate all other shapes
 	for shape in collision_shapes:
 		if shape and shape != excluded_shape:
-			shape.call_deferred("set", "disabled", false)
+			shape.set_deferred("disabled", false)
 			shape.visible = true
 			print("Reactivated shape:", shape.name)
