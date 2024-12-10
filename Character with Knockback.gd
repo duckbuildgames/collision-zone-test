@@ -11,14 +11,18 @@ var max_knockback_uses: int = 5
 var current_knockback_uses: int = 5
 var knockback_indicators: Array[OmniLight3D] = []
 
-var collision_shapes: Array[CollisionShape3D] = []
-var active_collision_shape: CollisionShape3D = null
+@onready var collision_shapes: Array[CollisionShape3D] = []
+@onready var active_collision_shape: CollisionShape3D = null
 
 func _ready():
 	print("Area3D is monitoring:", $"../Area3D".monitoring)
 	print("Collision shapes array: ", collision_shapes)
 	knockback_indicators = [
-		$"Knockback_Indicator 1", $"Knockback_Indicator 2", $"Knockback_Indicator 3", $"Knockback_Indicator 4", $"Knockback_Indicator 5"
+		$"Knockback_Indicator 1", 
+		$"Knockback_Indicator 2", 
+		$"Knockback_Indicator 3", 
+		$"Knockback_Indicator 4", 
+		$"Knockback_Indicator 5", 
 	]
 	print("Knockback indicators:", knockback_indicators)
 	update_knockback_visuals()
@@ -29,11 +33,8 @@ func _ready():
 		$"../Area3D/CollisionShape3D 3", 
 		$"../Area3D/CollisionShape3D 4",
 	]
-	
-
 func _physics_process(delta):
 	
-
 # Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -112,25 +113,27 @@ func update_knockback_visuals():
 		else:
 			print("Knockback indicator", i + 1, "is missing!")
 
-
+	
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	print("body entered")
+	print("body entered", body.name)
+
 	if body == self:  
 		for shape in collision_shapes:
+			print("Checking shape:", shape.name, "Disabled:", shape.disabled)
 			if shape and not shape.disabled:  
 				replenish_knockback()
 				deactivate_collision_shape(shape)
 				reactivate_other_collision_shapes(shape)
 				break
-		
+	
 func deactivate_collision_shape(shape: CollisionShape3D):
-	if shape and not shape.disabled:
-		shape.set_deferred("disabled", true)
-		shape.visible = false
-		print("Deactivating shape:", shape.name, "Disabled state after call:", shape.disabled)
-		active_collision_shape = shape
-		shape.set_deferred("disabled", true)
-		await get_tree().process_frame
+	if shape and collision_shapes.has(shape):
+		if shape and not shape.disabled:
+			shape.set_deferred("disabled", true)
+			shape.set_deferred("visible", false)
+			print("Deactivating shape:", shape.name, "Disabled state after call:", shape.disabled)
+			await get_tree().process_frame
+		
 		print("Post-deferred disabled state:", shape.disabled)
 	else: 
 		print("Error: Shape is null in deactivate_collision_shape")
@@ -139,6 +142,7 @@ func reactivate_other_collision_shapes(excluded_shape: CollisionShape3D):
 	# Reactivate all other shapes
 	for shape in collision_shapes:
 		if shape and shape != excluded_shape:
-			shape.set_deferred("disabled", false)
-			shape.visible = true
-			print("Reactivated shape:", shape.name)
+			if shape.disabled:
+				shape.set_deferred("disabled", false)
+				shape.set_deferred("visible", true)
+				print("Reactivated shape:", shape.name)
